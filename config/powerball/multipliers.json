@@ -1,0 +1,22 @@
+[
+    {
+        "multiplier": 2,
+        "probability_num": 23,
+        "proability_denom": 42
+    },
+    {
+        "multiplier": 3,
+        "probability_num": 13,
+        "probability_denom": 42
+    },
+    {
+        "multiplier": 4,
+        "probability_num": 3,
+        "probability_denom": 42
+    },
+    {
+        "multiplier": 5,
+        "probability_num": 2,
+        "probability_denom": 42
+    }
+]

@@ -45,15 +45,15 @@ if len(sys.argv) != 2 or sys.argv[1] not in ('m', 'M', 'p', 'P'):
 # Generate probability distribution dicts
 if sys.argv[1] in ('m', 'M'):
     print('Generating 5 MegaMillions tickets using a mixed-strategy Nash Equilibrium: ')
-    regularFreqs = readFileToDict('MegaMillionsRegular.csv')
-    megaFreqs = readFileToDict('MegaBall.csv')
+    regularFreqs = readFileToDict('./data/megamillions/normalball.csv')
+    megaFreqs = readFileToDict('./data/megamillions/specialball.csv')
     drawTickets(regularFreqs, megaFreqs, 5)
     print('Probability distribution source: https://www.usamega.com/mega-millions/statistics')
 
 elif sys.argv[1] in ('p', 'P'):
     print('Generating 5 PowerBall tickets using a mixed-strategy Nash Equilibrium: ')
-    regularFreqs = readFileToDict('PowerballRegular.csv')
-    powerFreqs = readFileToDict('PowerBall.csv')
+    regularFreqs = readFileToDict('./data/powerball/normalball.csv')
+    powerFreqs = readFileToDict('./data/powerball/specialball.csv')
     drawTickets(regularFreqs, powerFreqs, 5)
     print('Probability distribution source: https://www.usamega.com/powerball/statistics')
 

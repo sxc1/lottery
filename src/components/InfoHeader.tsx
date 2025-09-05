@@ -4,10 +4,10 @@ const Infoheader = () => {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        Container 1
+        Info
       </Typography>
       <Typography variant="body1" color="text.secondary">
-        This is the first container
+        Coming soon!
       </Typography>
     </>
   )

@@ -108,22 +108,3 @@ export const generateLotteryNumbers = (
     ticketCount
   };
 };
-
-/**
- * Utility function to format a ticket for display
- */
-export const formatTicket = (ticket: LotteryTicket, lotteryType: string): string => {
-  const mainNumbersStr = ticket.mainNumbers.join(' - ');
-  const specialLabel = lotteryType === 'powerball' ? 'PB' : 'MB';
-  
-  return `${mainNumbersStr} | ${specialLabel}: ${ticket.specialNumber}`;
-};
-
-/**
- * Utility function to format all tickets for display
- */
-export const formatAllTickets = (generatedTickets: GeneratedTickets): string[] => {
-  return generatedTickets.tickets.map(ticket => 
-    formatTicket(ticket, generatedTickets.lotteryType)
-  );
-};

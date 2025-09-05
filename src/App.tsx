@@ -20,6 +20,9 @@ function App() {
   // Snapshot values captured when Generate is clicked
   const [generatedLotteryType, setGeneratedLotteryType] = useState('')
   const [generatedRandomnessType, setGeneratedRandomnessType] = useState('')
+  
+  // Generation trigger - incremented each time Generate is clicked
+  const [generationTrigger, setGenerationTrigger] = useState(0)
 
   const handleLotteryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLotteryType(event.target.value)
@@ -30,9 +33,9 @@ function App() {
   }
 
   const handleGenerateClick = () => {
-    // Capture current values as snapshots
     setGeneratedLotteryType(lotteryType)
     setGeneratedRandomnessType(randomnessType)
+    setGenerationTrigger(prev => prev + 1)
   }
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -121,6 +124,8 @@ function App() {
               <ResultsDisplay 
                 lotteryType={generatedLotteryType}
                 randomnessType={generatedRandomnessType}
+                ticketCount={5} //TODO: Make this dynamic
+                generationTrigger={generationTrigger}
               />
             </Paper>
           </Box>

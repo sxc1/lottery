@@ -83,6 +83,7 @@ const LotterySelector = ({
         color="primary" 
         onClick={handleGenerate}
         sx={{ mt: 2 }}
+        size="large"
       >
         Generate
       </Button>

@@ -1,4 +1,5 @@
 import './App.css'
+import { useState } from 'react'
 import { 
   AppBar, 
   Toolbar, 
@@ -7,8 +8,32 @@ import {
   Box, 
   Paper
 } from '@mui/material'
+import Infoheader from './components/InfoHeader'
+import LotterySelector from './components/LotterySelector'
+import ResultsDisplay from './components/ResultsDisplay'
 
 function App() {
+  // Perpetually updated radio button values
+  const [lotteryType, setLotteryType] = useState('')
+  const [randomnessType, setRandomnessType] = useState('random')
+  
+  // Snapshot values captured when Generate is clicked
+  const [generatedLotteryType, setGeneratedLotteryType] = useState('')
+  const [generatedRandomnessType, setGeneratedRandomnessType] = useState('')
+
+  const handleLotteryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLotteryType(event.target.value)
+  }
+
+  const handleRandomnessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRandomnessType(event.target.value)
+  }
+
+  const handleGenerateClick = () => {
+    // Capture current values as snapshots
+    setGeneratedLotteryType(lotteryType)
+    setGeneratedRandomnessType(randomnessType)
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Top App Bar */}
@@ -22,6 +47,7 @@ function App() {
 
       {/* Main Container */}
       <Container maxWidth="lg">
+        {/* Top Container */}
         <Box 
           sx={{ 
             display: 'flex', 
@@ -42,12 +68,7 @@ function App() {
                 justifyContent: 'center' 
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Container 1
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                This is the first container
-              </Typography>
+              <Infoheader />
             </Paper>
           </Box>
         </Box>
@@ -60,7 +81,7 @@ function App() {
             mt: 3
           }}
         >
-          
+          {/* Bottom Left Container */}
           <Box sx={{ flex: 1 }}>
             <Paper 
               elevation={3} 
@@ -69,19 +90,22 @@ function App() {
                 height: 400, 
                 display: 'flex', 
                 flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
+                alignItems: 'flex-start', 
+                justifyContent: 'flex-start',
+                gap: 3
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Container 2
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                This is the second container
-              </Typography>
+              <LotterySelector
+                lotteryType={lotteryType}
+                randomnessType={randomnessType}
+                onLotteryChange={handleLotteryChange}
+                onRandomnessChange={handleRandomnessChange}
+                onGenerate={handleGenerateClick}
+              />
             </Paper>
           </Box>
           
+          {/* Bottom Right Container */}
           <Box sx={{ flex: 1 }}>
             <Paper 
               elevation={3} 
@@ -94,12 +118,10 @@ function App() {
                 justifyContent: 'center' 
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Container 3
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                This is the third container
-              </Typography>
+              <ResultsDisplay 
+                lotteryType={generatedLotteryType}
+                randomnessType={generatedRandomnessType}
+              />
             </Paper>
           </Box>
         </Box>

@@ -71,7 +71,6 @@ export function calculateMatchChance(lotteryType: 'megamillions' | 'powerball', 
   const normalMatchChance = nChooseK(5, normalMatches) * nChooseK(normalBallRange - 5, 5 - normalMatches) / nChooseK(normalBallRange, 5);
   const specialMatchChance = specialMatch ? (1 / specialBallRange) : 1;
   const probability = normalMatchChance * specialMatchChance;
-  console.log({lotteryType: lotteryType, normalMatches: normalMatches, specialMatch: specialMatch, probability: probability, inverse: (1 / probability)});
   return probability;
 }
 
@@ -92,7 +91,6 @@ export function calculateDrawEv(lotteryType: 'megamillions' | 'powerball', multi
 export function calculateExpectedMultiplier(lotteryType: 'megamillions' | 'powerball'): number {
     const multiplierChances = getMultiplierChances(lotteryType);
     const expectedMultiplier = multiplierChances.reduce((acc, curr) => acc + curr.multiplier * curr.probability_num / curr.probability_denom, 0);
-    console.log(lotteryType + 'multiplier: ' + expectedMultiplier);
     return expectedMultiplier;
 }
 

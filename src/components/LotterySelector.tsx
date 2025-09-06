@@ -74,7 +74,7 @@ const LotterySelector = ({
           onChange={onRandomnessChange}
         >
           <FormControlLabel value="random" control={<Radio />} label="Fully Random" />
-          <FormControlLabel value="nash" control={<Radio />} label="Mixed Nash (coming soon)" disabled />
+          <FormControlLabel value="nash" control={<Radio />} label="Mixed Nash" />
         </RadioGroup>
       </FormControl>
 

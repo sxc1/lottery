@@ -16,15 +16,19 @@ const ResultsDisplay = ({ lotteryType, randomnessType, ticketCount, generationTr
 
   // Generate tickets only when generationTrigger changes (i.e., when Generate button is clicked)
   useEffect(() => {
-    if (generationTrigger > 0 && lotteryType && randomnessType) {
-      try {
-        const tickets = generateLotteryNumbers(lotteryType, randomnessType, ticketCount)
-        setGeneratedTickets(tickets)
-      } catch (err) {
-        console.log(err instanceof Error ? err.message : 'ResultsDisplay: unknown error')
-        setGeneratedTickets(null)
+    const generateTickets = async () => {
+      if (generationTrigger > 0 && lotteryType && randomnessType) {
+        try {
+          const tickets = await generateLotteryNumbers(lotteryType, randomnessType, ticketCount)
+          setGeneratedTickets(tickets)
+        } catch (err) {
+          console.log(err instanceof Error ? err.message : 'ResultsDisplay: unknown error')
+          setGeneratedTickets(null)
+        }
       }
     }
+
+    generateTickets()
   }, [generationTrigger, lotteryType, randomnessType, ticketCount])
 
   // TODO: Refactor this goof

@@ -124,6 +124,6 @@ export function calculateExpectedValue(
     } else {
         throw new Error('Invalid lottery type');
     }
-    console.log({lotteryType: lotteryType, jackpotEv: jackpotEv, nonJackpotEv: nonJackpotEv });
+    console.log({lotteryType: lotteryType, jackpotEv: jackpotEv, nonJackpotEv: nonJackpotEv, cost: cost});
     return jackpotEv + nonJackpotEv - cost;
 }

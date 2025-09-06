@@ -1,7 +1,10 @@
+import Papa from 'papaparse';
 import megaMillionsNumbers from '../../config/megamillions/numbers.json';
 import powerballNumbers from '../../config/powerball/numbers.json';
-import Papa from 'papaparse';
-
+import megaMillionsNormalBallStats from '../../data/megamillions/normalball.csv?raw';
+import megaMillionsSpecialBallStats from '../../data/megamillions/specialball.csv?raw';
+import powerballNormalBallStats from '../../data/powerball/normalball.csv?raw';
+import powerballSpecialBallStats from '../../data/powerball/specialball.csv?raw';
 export interface LotteryConfig {
   fiveDraw: number;
   specialDraw: number;
@@ -42,43 +45,53 @@ const LOTTERY_CONFIGS: Record<string, LotteryConfig> = {
   }
 };
 
+
 /**
- * Reads CSV data from a URL and parses it into objects
+ * Parses CSV string data into objects
  */
-const readCSVFromFile = async (filePath: string): Promise<any[]> => {
-  try {
-    const response = await fetch(filePath);
-    const csvText = await response.text();
-    
-    return new Promise((resolve, reject) => {
-      Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        transform: (value: string) => {
-          // Try to convert to number if possible
-          const numValue = Number(value);
-          return !isNaN(numValue) && value.trim() !== '' ? numValue : value;
-        },
-        complete: (results) => {
-          if (results.errors.length > 0) {
-            reject(results.errors);
-          } else {
-            resolve(results.data as any[]);
-          }
-        }
-      });
-    });
-  } catch (error) {
-    throw new Error(`Failed to read CSV from ${filePath}: ${error}`);
+const parseCSVString = (csvText: string): any[] => {
+  const result = Papa.parse(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    transform: (value: string) => {
+      // Try to convert to number if possible
+      const numValue = Number(value);
+      return !isNaN(numValue) && value.trim() !== '' ? numValue : value;
+    }
+  });
+  
+  if (result.errors.length > 0) {
+    throw new Error(`CSV parsing errors: ${result.errors.map(e => e.message).join(', ')}`);
   }
+  
+  return result.data as any[];
 };
 
 /**
- * Generic function to read ball statistics from CSV file
+ * Mapping of CSV data by lottery type and ball type
  */
-const readBallStats = async (lotteryType: string, ballType: 'normalball' | 'specialball'): Promise<BallStats[]> => {
-  const csvPath = `./data/${lotteryType}/${ballType}.csv`;
-  const data = await readCSVFromFile(csvPath);
+const CSV_DATA_MAP = {
+  megamillions: {
+    normalball: megaMillionsNormalBallStats,
+    specialball: megaMillionsSpecialBallStats
+  },
+  powerball: {
+    normalball: powerballNormalBallStats,
+    specialball: powerballSpecialBallStats
+  }
+} as const;
+
+/**
+ * Generic function to read ball statistics from imported CSV data
+ */
+const readBallStats = (lotteryType: string, ballType: 'normalball' | 'specialball'): BallStats[] => {
+  const csvText = CSV_DATA_MAP[lotteryType as keyof typeof CSV_DATA_MAP]?.[ballType];
+  
+  if (!csvText) {
+    throw new Error(`No CSV data found for ${lotteryType} ${ballType}`);
+  }
+  
+  const data = parseCSVString(csvText);
   
   return data.map((row: any) => ({
     number: Number(row.Number),
@@ -91,12 +104,10 @@ const readBallStats = async (lotteryType: string, ballType: 'normalball' | 'spec
 /**
  * Reads draw statistics for both normal and special balls
  */
-export const readDrawStats = async (lotteryType: string): Promise<LotteryStats> => {
+export const readDrawStats = (lotteryType: string): LotteryStats => {
   try {
-    const [normalBalls, specialBalls] = await Promise.all([
-      readBallStats(lotteryType, 'normalball'),
-      readBallStats(lotteryType, 'specialball')
-    ]);
+    const normalBalls = readBallStats(lotteryType, 'normalball');
+    const specialBalls = readBallStats(lotteryType, 'specialball');
     
     return { normalBalls, specialBalls };
   } catch (error) {
@@ -172,11 +183,11 @@ const generateMixedNashTicket = (normalBalls: BallStats[], specialBalls: BallSta
 /**
  * Main function to generate lottery tickets
  */
-export const generateLotteryNumbers = async (
+export const generateLotteryNumbers = (
   lotteryType: string,
   randomnessType: string,
   ticketCount: number
-): Promise<GeneratedTickets> => {
+): GeneratedTickets => {
   // Validate lottery type
   if (!LOTTERY_CONFIGS[lotteryType]) {
     throw new Error(`Unsupported lottery type: ${lotteryType}`);
@@ -190,6 +201,12 @@ export const generateLotteryNumbers = async (
   const config = LOTTERY_CONFIGS[lotteryType];
   const tickets: LotteryTicket[] = [];
   
+  // Load draw stats once if needed for nash generation
+  let lotteryStats: LotteryStats | null = null;
+  if (randomnessType === 'nash') {
+    lotteryStats = readDrawStats(lotteryType);
+  }
+  
   // Generate tickets based on randomness type
   for (let i = 0; i < ticketCount; i++) {
     let ticket: LotteryTicket;
@@ -199,8 +216,10 @@ export const generateLotteryNumbers = async (
         ticket = generateRandomTicket(config);
         break;
       case 'nash':
-        const { normalBalls, specialBalls } = await readDrawStats(lotteryType);
-        ticket = generateMixedNashTicket(normalBalls, specialBalls);
+        if (!lotteryStats) {
+          throw new Error('Lottery stats not loaded for nash generation');
+        }
+        ticket = generateMixedNashTicket(lotteryStats.normalBalls, lotteryStats.specialBalls);
         break;
       default:
         throw new Error(`Unsupported randomness type: ${randomnessType}`);

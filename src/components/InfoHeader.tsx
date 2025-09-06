@@ -14,12 +14,12 @@ const Infoheader = () => {
   const TAX_RATE = 0.35; // Federal rate only https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2025
 
   // TODO: Pull these values from an API
-  const [powerballJackpot, setPowerballJackpot] = useState(1800);
-  const [powerballJackpotCash, setPowerballJackpotCash] = useState(826);
-  const [powerballJackpotTakeHome, setPowerballJackpotTakeHome] = useState(powerballJackpotCash * (1 - TAX_RATE));
-  const [megamillionsJackpot, setMegamillionsJackpot] = useState(336);
-  const [megamillionsJackpotCash, setMegamillionsJackpotCash] = useState(151);
-  const [megamillionsJackpotTakeHome, setMegamillionsJackpotTakeHome] = useState(megamillionsJackpotCash * (1 - TAX_RATE));
+  const powerballJackpot = 1800;
+  const powerballJackpotCash = 826;
+  const powerballJackpotTakeHome = powerballJackpotCash * (1 - TAX_RATE);
+  const megamillionsJackpot = 336;
+  const megamillionsJackpotCash = 151;
+  const megamillionsJackpotTakeHome = megamillionsJackpotCash * (1 - TAX_RATE);
 
   const [powerballExpectedValue, setPowerballExpectedValue] = useState(0);
   const [powerballPowerplayExpectedValue, setPowerballPowerplayExpectedValue] = useState(0);

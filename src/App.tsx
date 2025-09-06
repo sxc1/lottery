@@ -1,13 +1,11 @@
 import './App.css'
 import { useState } from 'react'
 import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
   Container, 
   Box, 
   Paper
 } from '@mui/material'
+import AppBar from './components/AppBar'
 import Infoheader from './components/InfoHeader'
 import LotterySelector from './components/LotterySelector'
 import ResultsDisplay from './components/ResultsDisplay'
@@ -40,14 +38,7 @@ function App() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Top App Bar */}
-      <AppBar position="static" sx={{ mb: 4 }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Lottery App
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
+      <AppBar />
       {/* Main Container */}
       <Container maxWidth="md">
         {/* Top Container */}

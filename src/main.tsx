@@ -7,7 +7,11 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import App from './App.tsx'
 
-const theme = createTheme()
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -49,7 +49,7 @@ function App() {
       </AppBar>
 
       {/* Main Container */}
-      <Container maxWidth="lg">
+      <Container maxWidth="md">
         {/* Top Container */}
         <Box 
           sx={{ 
@@ -64,7 +64,6 @@ function App() {
               elevation={3} 
               sx={{ 
                 p: 3, 
-                height: 400, 
                 display: 'flex', 
                 flexDirection: 'column', 
                 alignItems: 'center', 

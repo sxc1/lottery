@@ -6,6 +6,7 @@ import {
   TableHead, 
   TableRow
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { calculateExpectedValue } from '../utils/lotteryInfo'
 import { useEffect, useState } from 'react';
 
@@ -23,12 +24,23 @@ const Infoheader = () => {
   const [powerballExpectedValue, setPowerballExpectedValue] = useState(0);
   const [powerballPowerplayExpectedValue, setPowerballPowerplayExpectedValue] = useState(0);
   const [megamillionsExpectedValue, setMegamillionsExpectedValue] = useState(0);
+
   useEffect(() => {
     setPowerballExpectedValue(calculateExpectedValue('powerball', powerballJackpotTakeHome, false));
     setPowerballPowerplayExpectedValue(calculateExpectedValue('powerball', powerballJackpotTakeHome, true));
     // MegaMillions Multiplier is free/always active
     setMegamillionsExpectedValue(calculateExpectedValue('megamillions', megamillionsJackpotTakeHome, true));
   }, [powerballJackpotTakeHome, megamillionsJackpotTakeHome]);
+
+  
+  const theme = useTheme();
+  const [greenColor, setGreenColor] = useState(theme.palette.success.main);
+  const [redColor, setRedColor] = useState(theme.palette.error.main);
+
+  useEffect(() => {
+    setGreenColor(theme.palette.mode === 'light' ? theme.palette.success.dark : theme.palette.success.light);
+    setRedColor(theme.palette.mode === 'light' ? theme.palette.error.dark : theme.palette.error.light);
+  }, [theme.palette.mode])
 
   return (
     <>
@@ -47,7 +59,7 @@ const Infoheader = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>Powerball</TableCell>
               <TableCell align="center">{'$ ' + powerballJackpot.toLocaleString() + ' M'}</TableCell>
               <TableCell align="center">{'$ ' + (powerballJackpotTakeHome).toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center" sx={{ color: powerballExpectedValue >= 0 ? 'green' : 'red' }}>
+              <TableCell align="center" sx={{ color: powerballExpectedValue >= 0 ? greenColor : redColor }}>
                 {'$ ' + powerballExpectedValue.toFixed(2)}
               </TableCell>
             </TableRow>
@@ -55,7 +67,7 @@ const Infoheader = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>Powerball + Power Play</TableCell>
               <TableCell align="center">{'$ ' + powerballJackpot.toLocaleString() + ' M'}</TableCell>
               <TableCell align="center">{'$ ' + (powerballJackpotTakeHome).toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center" sx={{ color: powerballPowerplayExpectedValue >= 0 ? 'green' : 'red' }}>
+              <TableCell align="center" sx={{ color: powerballPowerplayExpectedValue >= 0 ? greenColor : redColor }}>
                 {'$ ' + powerballPowerplayExpectedValue.toFixed(2)}
               </TableCell>
             </TableRow>
@@ -63,7 +75,7 @@ const Infoheader = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>MegaMillions</TableCell>
               <TableCell align="center">{'$ ' + megamillionsJackpot.toLocaleString() + ' M'}</TableCell>
               <TableCell align="center">{'$ ' + megamillionsJackpotTakeHome.toLocaleString() + ' M' }</TableCell>
-              <TableCell align="center" sx={{ color: megamillionsExpectedValue >= 0 ? 'green' : 'red' }}>
+              <TableCell align="center" sx={{ color: megamillionsExpectedValue >= 0 ? greenColor : redColor }}>
                 {'$ ' + megamillionsExpectedValue.toFixed(2)}
               </TableCell>
             </TableRow>

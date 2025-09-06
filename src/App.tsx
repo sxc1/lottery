@@ -83,7 +83,6 @@ function App() {
                 height: 400, 
                 display: 'flex', 
                 flexDirection: 'column', 
-                alignItems: 'flex-start', 
                 justifyContent: 'flex-start',
                 gap: 3
               }}

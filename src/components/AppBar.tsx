@@ -10,7 +10,7 @@ export default function AppBar() {
       <MuiAppBar position="static" sx={{ mb: 4 }} enableColorOnDark>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Lottery App
+          Lottery Calculator by sxc1
         </Typography>
         <IconButton
             size="large"

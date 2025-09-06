@@ -30,11 +30,6 @@
         "payout": 7
     },
     {
-        "normal_draw": 2,
-        "special_draw": 0,
-        "payout": 4
-    },
-    {
         "normal_draw": 1,
         "special_draw": 1,
         "payout": 4
@@ -42,6 +37,6 @@
     {
         "normal_draw": 0,
         "special_draw": 1,
-        "payout": 3
+        "payout": 4
     }
 ]

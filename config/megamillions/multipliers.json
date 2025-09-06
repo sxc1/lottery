@@ -2,26 +2,26 @@
     {
         "multiplier": 2,
         "probability_num": 1,
-        "proability_denom": 2.13
+        "probability_denom": 2.13
     },
     {
         "multiplier": 3,
         "probability_num": 1,
-        "proability_denom": 3.2
+        "probability_denom": 3.2
     },
     {
         "multiplier": 4,
         "probability_num": 1,
-        "proability_denom": 8
+        "probability_denom": 8
     },
     {
         "multiplier": 5,
         "probability_num": 1,
-        "proability_denom": 8
+        "probability_denom": 16
     },
     {
         "multiplier": 10,
         "probability_num": 1,
-        "proability_denom": 32
+        "probability_denom": 32
     }
 ]

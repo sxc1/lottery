@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import EditableTable from './EditableTable';
-import { getLotteryPayout } from '../utils/lotteryPayoutEstimator';
+import { calculateLotteryPayout, getLotteryPayout } from '../utils/lotteryPayoutEstimator';
 interface LotteryPayout {
   name: string;
   jackpot: number;
@@ -23,19 +23,35 @@ const Infoheader = () => {
   const [megamillionsPayout, setMegamillionsPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
 
   useEffect(() => {
-    setPowerballPayout(getLotteryPayout('powerball', false));
-    setPowerballPowerplayPayout(getLotteryPayout('powerball', true));
-    // MegaMillions multiplier is free/always active
-    setMegamillionsPayout(getLotteryPayout('megamillions', true));
+    const loadPayouts = async () => {
+      try {
+        const [powerball, powerballPowerplay, megamillions] = await Promise.all([
+          // TODO: reduce powerball API calls from 2 to 1
+          getLotteryPayout('powerball', false),
+          getLotteryPayout('powerball', true),
+          // MegaMillions multiplier is free/always active
+          getLotteryPayout('megamillions', true)
+        ]);
+        
+        setPowerballPayout(powerball);
+        setPowerballPowerplayPayout(powerballPowerplay);
+        setMegamillionsPayout(megamillions);
+      } catch (error) {
+        console.error('Error loading lottery payouts:', error);
+        // Keep default values on error
+      }
+    };
+
+    loadPayouts();
   }, []);
 
   const handleJackpotChange = (rowIndex: number, newJackpot: number) => {
     if (rowIndex === 0) {
-      setPowerballPayout(getLotteryPayout('powerball', false, newJackpot));
+      setPowerballPayout(calculateLotteryPayout('powerball', false, newJackpot));
     } else if (rowIndex === 1) {
-      setPowerballPowerplayPayout(getLotteryPayout('powerball', true, newJackpot));
+      setPowerballPowerplayPayout(calculateLotteryPayout('powerball', true, newJackpot));
     } else if (rowIndex === 2) {
-      setMegamillionsPayout(getLotteryPayout('megamillions', true, newJackpot));
+      setMegamillionsPayout(calculateLotteryPayout('megamillions', true, newJackpot));
     }
   };
 

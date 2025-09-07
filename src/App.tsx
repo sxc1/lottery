@@ -13,7 +13,7 @@ import ResultsDisplay from './components/ResultsDisplay'
 function App() {
   // Perpetually updated radio button values
   const [lotteryType, setLotteryType] = useState('')
-  const [randomnessType, setRandomnessType] = useState('random')
+  const [randomnessType, setRandomnessType] = useState('nash')
   
   // Snapshot values captured when Generate is clicked
   const [generatedLotteryType, setGeneratedLotteryType] = useState('')

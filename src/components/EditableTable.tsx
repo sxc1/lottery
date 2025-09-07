@@ -66,13 +66,25 @@ export default function EditableTable({ header, rows, onJackpotChange }: Editabl
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  {header.map((h) => <TableCell key={h} align="center" sx={{ fontWeight: 'bold' }}>{h}</TableCell>)}
+                  {header.map((h, index) => (
+                    <TableCell 
+                      key={h} 
+                      align="center" 
+                      sx={{ 
+                        fontWeight: 'bold',
+                        display: index === 2 ? { xs: 'none', sm: 'table-cell' } : 'table-cell'
+                      }}
+                    >
+                      {h}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((lottery, rowIndex) => (
                   <TableRow key={rowIndex}>
                     <TableCell sx={{ fontWeight: 'bold' }}>{lottery.name}</TableCell>
+                    {/* Editable cell*/}
                     <TableCell 
                       align="center" 
                       onClick={() => handleCellClick(rowIndex, lottery.jackpot)}
@@ -104,7 +116,13 @@ export default function EditableTable({ header, rows, onJackpotChange }: Editabl
                         lottery.jackpot > 0 ? '$ ' + lottery.jackpot.toLocaleString() + ' M' : <EditIcon />
                       )}
                     </TableCell>
-                    <TableCell align="center">{'$ ' + lottery.jackpotTakeHome.toFixed(0).toLocaleString() + ' M'}</TableCell>
+                    {/* Cell hiddon on mobile/xs displays*/}
+                    <TableCell 
+                      align="center" 
+                      sx={{ display: { xs: 'none', sm: 'table-cell' } }}
+                    >
+                      {'$ ' + lottery.jackpotTakeHome.toFixed(0).toLocaleString() + ' M'}
+                    </TableCell>
                     <TableCell align="center" sx={{ color: lottery.expectedValue >= 0 ? greenColor : redColor }}>
                       {'$ ' + lottery.expectedValue.toFixed(2)}
                     </TableCell>

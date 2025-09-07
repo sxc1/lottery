@@ -104,7 +104,7 @@ export default function EditableTable({ header, rows, onJackpotChange }: Editabl
                         lottery.jackpot > 0 ? '$ ' + lottery.jackpot.toLocaleString() + ' M' : <EditIcon />
                       )}
                     </TableCell>
-                    <TableCell align="center">{'$ ' + (lottery.jackpotTakeHome).toLocaleString() + ' M'}</TableCell>
+                    <TableCell align="center">{'$ ' + lottery.jackpotTakeHome.toFixed(0).toLocaleString() + ' M'}</TableCell>
                     <TableCell align="center" sx={{ color: lottery.expectedValue >= 0 ? greenColor : redColor }}>
                       {'$ ' + lottery.expectedValue.toFixed(2)}
                     </TableCell>

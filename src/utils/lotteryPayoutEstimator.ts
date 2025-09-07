@@ -18,30 +18,54 @@ interface LotteryPayout {
     expectedValue: number;
   }
 
-export function getLotteryPayout(lotteryType: 'powerball' | 'megamillions', multiplierActive: boolean, customJackpot?: number): LotteryPayout {
-    if (lotteryType === 'powerball') {
-        const jackpot = customJackpot ?? PB_JACKPOT;
-        const jackpotCash = customJackpot ? customJackpot * JACKPOT_CASH_RATIO : PB_JACKPOT_CASH;
-        const jackpotTakeHome = jackpotCash * (1 - TAX_RATE);
-        return {
-            name: 'Powerball' + (multiplierActive ? ' + Power Play' : ''),
-            jackpot: jackpot,
-            jackpotCash: jackpotCash,
-            jackpotTakeHome: jackpotTakeHome,
-            expectedValue: calculateExpectedValue('powerball', jackpotTakeHome, multiplierActive),
-        };
-    } else if (lotteryType === 'megamillions') {
-        const jackpot = customJackpot ?? MM_JACKPOT;
-        const jackpotCash = customJackpot ? customJackpot * JACKPOT_CASH_RATIO : MM_JACKPOT_CASH;
-        const jackpotTakeHome = jackpotCash * (1 - TAX_RATE);
-        return {
-            name: 'MegaMillions',
-            jackpot: jackpot,
-            jackpotCash: jackpotCash,
-            jackpotTakeHome: jackpotTakeHome,
-            expectedValue: calculateExpectedValue('megamillions', jackpotTakeHome, true),
-        };
-    } else {
-        throw new Error('Invalid lottery type');
+export function getLotteryDisplayname(lotteryType: 'powerball' | 'megamillions', multiplierActive: boolean): string {
+  return lotteryType === 'powerball' ? 'Powerball' + (multiplierActive ? ' + Power Play' : '') : 'MegaMillions';
+}
+
+export function scrapePowerballJackpot(): {jackpot: number, jackpotCash: number} {
+    // TODO: Implement
+    return {
+        jackpot: PB_JACKPOT,
+        jackpotCash: PB_JACKPOT_CASH
     }
+}
+
+export function scrapeMegaMillionsJackpot(): {jackpot: number, jackpotCash: number} {
+    // TODO: Implement
+    return {
+        jackpot: MM_JACKPOT,
+        jackpotCash: MM_JACKPOT_CASH
+    }
+}
+
+export function getLotteryPayout(lotteryType: 'powerball' | 'megamillions', multiplierActive: boolean, customJackpot?: number): LotteryPayout {
+    if (customJackpot) {
+        return calculateLotteryPayout(lotteryType, multiplierActive, customJackpot);
+    } else {
+        var payout = {jackpot: 0, jackpotCash: 0};
+
+        if (lotteryType === 'powerball') {
+            payout = scrapePowerballJackpot();
+        } else if (lotteryType === 'megamillions') {
+            payout = scrapeMegaMillionsJackpot();
+        } else {
+            throw new Error('Invalid lottery type');
+        }
+
+        return calculateLotteryPayout(lotteryType, multiplierActive, payout.jackpot, payout.jackpotCash);
+    }
+}
+
+export function calculateLotteryPayout(lotteryType: 'powerball' | 'megamillions', multiplierActive: boolean, jackpotValue: number, jackpotCashValue?: number): LotteryPayout {
+  const name = getLotteryDisplayname(lotteryType, multiplierActive);
+  const jackpotCash = jackpotCashValue ?? jackpotValue * JACKPOT_CASH_RATIO;
+  const jackpotTakeHome = jackpotCash * (1 - TAX_RATE);
+  const expectedValue = calculateExpectedValue(lotteryType, jackpotTakeHome, multiplierActive);
+  return {
+    name: name,
+    jackpot: jackpotValue,
+    jackpotCash: jackpotCash,
+    jackpotTakeHome: jackpotTakeHome,
+    expectedValue: expectedValue,
+  };
 }

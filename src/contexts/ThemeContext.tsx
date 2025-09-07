@@ -13,6 +13,25 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
+const THEME_STORAGE_KEY = 'lottery-app-theme'
+
+const getStoredTheme = (): ThemeMode => {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY)
+    return (stored === 'light' || stored === 'dark') ? stored : 'dark'
+  } catch {
+    return 'dark'
+  }
+}
+
+const setStoredTheme = (theme: ThemeMode): void => {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
+  } catch {
+    console.error('Error setting theme in localStorage')
+  }
+}
+
 export const useTheme = () => {
   const context = useContext(ThemeContext)
   if (context === undefined) {
@@ -26,7 +45,7 @@ interface ThemeProviderProps {
 }
 
 export const CustomThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [themeMode, setThemeMode] = useState<ThemeMode>('dark')
+  const [themeMode, setThemeMode] = useState<ThemeMode>(getStoredTheme)
 
   const theme = createTheme({
     palette: {
@@ -35,7 +54,11 @@ export const CustomThemeProvider: React.FC<ThemeProviderProps> = ({ children }) 
   })
 
   const toggleTheme = () => {
-    setThemeMode(prev => prev === 'light' ? 'dark' : 'light')
+    setThemeMode(prev => {
+      const newTheme = prev === 'light' ? 'dark' : 'light'
+      setStoredTheme(newTheme)
+      return newTheme
+    })
   }
 
   const value = {

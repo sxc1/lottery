@@ -1,5 +1,5 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { 
   Container, 
   Box, 
@@ -35,6 +35,11 @@ function App() {
     setGeneratedRandomnessType(randomnessType)
     setGenerationTrigger(prev => prev + 1)
   }
+
+  const handleBestLotteryChange = useCallback((bestLottery: 'powerball' | 'megamillions') => {
+    setLotteryType(bestLottery)
+  }, [])
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Top App Bar */}
@@ -61,7 +66,7 @@ function App() {
                 justifyContent: 'center' 
               }}
             >
-              <Infoheader />
+              <Infoheader onBestLotteryChange={handleBestLotteryChange} />
             </Paper>
           </Box>
         </Box>

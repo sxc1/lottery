@@ -10,7 +10,11 @@ interface LotteryPayout {
   expectedValue: number;
 };
 
-const Infoheader = () => {
+interface InfoHeaderProps {
+  onBestLotteryChange?: (bestLottery: 'powerball' | 'megamillions') => void;
+}
+
+const Infoheader = ({ onBestLotteryChange }: InfoHeaderProps) => {
   const DEFAULT_PAYOUT = {
     name: '',
     jackpot: 0,
@@ -23,6 +27,20 @@ const Infoheader = () => {
   const [powerballPowerplayPayout, setPowerballPowerplayPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
   const [megamillionsPayout, setMegamillionsPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
   const [isLoading, setIsLoading] = useState(true);
+
+  const determineBestLottery = (powerball: LotteryPayout, powerballPowerplay: LotteryPayout, megamillions: LotteryPayout): 'powerball' | 'megamillions' => {
+    const bestPowerballExpectedValue = Math.max(powerball.expectedValue, powerballPowerplay.expectedValue);
+    {/* Tie goes to MegaMillions since it has higher jackpot odds */}
+    return bestPowerballExpectedValue > megamillions.expectedValue ? 'powerball' : 'megamillions';
+  };
+
+  // Effect to notify parent when best lottery changes
+  useEffect(() => {
+    if (!isLoading && onBestLotteryChange) {
+      const bestLottery = determineBestLottery(powerballPayout, powerballPowerplayPayout, megamillionsPayout);
+      onBestLotteryChange(bestLottery);
+    }
+  }, [powerballPayout.expectedValue, powerballPowerplayPayout.expectedValue, megamillionsPayout.expectedValue, isLoading, onBestLotteryChange]);
 
   useEffect(() => {
     const loadPayouts = async () => {

@@ -77,7 +77,7 @@ const Infoheader = () => {
   } else {
     return (
       <EditableTable
-        header={['Name', 'Jackpot', 'Jackpot, Lump Sum After Taxes', 'Expected Value']}
+        header={['', 'Jackpot', 'Jackpot (Take Home)', 'Expected Value']}
         rows={[powerballPayout, powerballPowerplayPayout, megamillionsPayout]}
         onJackpotChange={handleJackpotChange}
       />

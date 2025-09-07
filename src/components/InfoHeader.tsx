@@ -29,11 +29,22 @@ const Infoheader = () => {
     setMegamillionsPayout(getLotteryPayout('megamillions', true));
   }, []);
 
+  const handleJackpotChange = (rowIndex: number, newJackpot: number) => {
+    if (rowIndex === 0) {
+      setPowerballPayout(getLotteryPayout('powerball', false, newJackpot));
+    } else if (rowIndex === 1) {
+      setPowerballPowerplayPayout(getLotteryPayout('powerball', true, newJackpot));
+    } else if (rowIndex === 2) {
+      setMegamillionsPayout(getLotteryPayout('megamillions', true, newJackpot));
+    }
+  };
+
   return (
     <>
       <EditableTable
         header={['Name', 'Jackpot', 'Jackpot, Lump Sum After Taxes', 'Expected Value']}
         rows={[powerballPayout, powerballPowerplayPayout, megamillionsPayout]}
+        onJackpotChange={handleJackpotChange}
       />
     </>
   )

@@ -4,10 +4,6 @@ import { calculateExpectedValue } from './lotteryInfo';
 const TAX_RATE = 0.35;
 const JACKPOT_CASH_RATIO = 0.45; // Estimated from historical data
 
-// TODO: Pull these values from an API
-const MM_JACKPOT = 336;
-const MM_JACKPOT_CASH = 151;
-
 interface LotteryPayout {
     name: string;
     jackpot: number;
@@ -76,12 +72,37 @@ export async function fetchPowerballJackpot(): Promise<LotteryFetchResult> {
   }
 }
 
-export function scrapeMegaMillionsJackpot(): LotteryFetchResult {
-    // TODO: Implement
-    return {
-        jackpot: MM_JACKPOT,
-        jackpotCash: MM_JACKPOT_CASH
+export async function fetchMegaMillionsJackpot(): Promise<LotteryFetchResult> {
+  try {
+    const response = await fetch("https://proxy.corsfix.com/?https://www.megamillions.com/cmspages/utilservice.asmx/GetLatestDrawData", {
+      headers: {
+        "x-corsfix-cache": "true",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const xmlText = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+    const jsonString = xmlDoc.documentElement?.textContent || '';
+    
+    if (!jsonString) {
+      throw new Error('No JSON data found in XML response');
+    }
+    
+    const data = JSON.parse(jsonString);
+    const jackpotData = data.Jackpot;
+    const jackpot = jackpotData.NextPrizePool / 1_000_000;
+    const jackpotCash = jackpotData.NextCashValue / 1_000_000;
+    
+    return { jackpot, jackpotCash };
+  } catch (error) {
+    console.error('Error fetching MegaMillions jackpot:', error);
+    return { jackpot: 0, jackpotCash: 0 };
+  }
 }
 
 export async function getLotteryPayout(lotteryType: 'powerball' | 'megamillions', multiplierActive: boolean, customJackpot?: number): Promise<LotteryPayout> {
@@ -93,7 +114,7 @@ export async function getLotteryPayout(lotteryType: 'powerball' | 'megamillions'
         if (lotteryType === 'powerball') {
             payout = await fetchPowerballJackpot();
         } else if (lotteryType === 'megamillions') {
-            payout = scrapeMegaMillionsJackpot();
+            payout = await fetchMegaMillionsJackpot();
         } else {
             throw new Error('Invalid lottery type');
         }

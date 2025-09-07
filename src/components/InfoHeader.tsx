@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import EditableTable from './EditableTable';
 import { calculateLotteryPayout, getLotteryPayout } from '../utils/lotteryPayoutEstimator';
 interface LotteryPayout {
@@ -21,6 +22,7 @@ const Infoheader = () => {
   const [powerballPayout, setPowerballPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
   const [powerballPowerplayPayout, setPowerballPowerplayPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
   const [megamillionsPayout, setMegamillionsPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadPayouts = async () => {
@@ -39,6 +41,8 @@ const Infoheader = () => {
       } catch (error) {
         console.error('Error loading lottery payouts:', error);
         // Keep default values on error
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -55,15 +59,30 @@ const Infoheader = () => {
     }
   };
 
-  return (
-    <>
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+      >
+        <CircularProgress size={60} />
+        <Typography variant="body2" color="text.secondary">
+          Loading lottery information...
+        </Typography>
+      </Box>
+    );
+  } else {
+    return (
       <EditableTable
         header={['Name', 'Jackpot', 'Jackpot, Lump Sum After Taxes', 'Expected Value']}
         rows={[powerballPayout, powerballPowerplayPayout, megamillionsPayout]}
         onJackpotChange={handleJackpotChange}
       />
-    </>
-  )
+    );
+  }
 }
 
 export default Infoheader

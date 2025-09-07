@@ -7,30 +7,35 @@ import {
   TableRow
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { calculateExpectedValue } from '../utils/lotteryInfo'
 import { useEffect, useState } from 'react';
+import { getLotteryPayout } from '../utils/lotteryPayoutEstimator';
+interface LotteryPayout {
+  name: string;
+  jackpot: number;
+  jackpotCash: number;
+  jackpotTakeHome: number;
+  expectedValue: number;
+};
 
 const Infoheader = () => {
-  const TAX_RATE = 0.35; // Federal rate only https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2025
+  const DEFAULT_PAYOUT = {
+    name: '',
+    jackpot: 0,
+    jackpotCash: 0,
+    jackpotTakeHome: 0,
+    expectedValue: 0,
+  };
 
-  // TODO: Pull these values from an API
-  const powerballJackpot = 1800;
-  const powerballJackpotCash = 826;
-  const powerballJackpotTakeHome = powerballJackpotCash * (1 - TAX_RATE);
-  const megamillionsJackpot = 336;
-  const megamillionsJackpotCash = 151;
-  const megamillionsJackpotTakeHome = megamillionsJackpotCash * (1 - TAX_RATE);
-
-  const [powerballExpectedValue, setPowerballExpectedValue] = useState(0);
-  const [powerballPowerplayExpectedValue, setPowerballPowerplayExpectedValue] = useState(0);
-  const [megamillionsExpectedValue, setMegamillionsExpectedValue] = useState(0);
+  const [powerballPayout, setPowerballPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
+  const [powerballPowerplayPayout, setPowerballPowerplayPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
+  const [megamillionsPayout, setMegamillionsPayout] = useState<LotteryPayout>(DEFAULT_PAYOUT);
 
   useEffect(() => {
-    setPowerballExpectedValue(calculateExpectedValue('powerball', powerballJackpotTakeHome, false));
-    setPowerballPowerplayExpectedValue(calculateExpectedValue('powerball', powerballJackpotTakeHome, true));
-    // MegaMillions Multiplier is free/always active
-    setMegamillionsExpectedValue(calculateExpectedValue('megamillions', megamillionsJackpotTakeHome, true));
-  }, [powerballJackpotTakeHome, megamillionsJackpotTakeHome]);
+    setPowerballPayout(getLotteryPayout('powerball', false));
+    setPowerballPowerplayPayout(getLotteryPayout('powerball', true));
+    // MegaMillions multiplier is free/always active
+    setMegamillionsPayout(getLotteryPayout('megamillions', true));
+  }, []);
 
   
   const theme = useTheme();
@@ -40,7 +45,7 @@ const Infoheader = () => {
   useEffect(() => {
     setGreenColor(theme.palette.mode === 'light' ? theme.palette.success.dark : theme.palette.success.light);
     setRedColor(theme.palette.mode === 'light' ? theme.palette.error.dark : theme.palette.error.light);
-  }, [theme.palette.mode])
+  }, [theme.palette.mode]);
 
   return (
     <>
@@ -55,30 +60,16 @@ const Infoheader = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Powerball</TableCell>
-              <TableCell align="center">{'$ ' + powerballJackpot.toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center">{'$ ' + (powerballJackpotTakeHome).toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center" sx={{ color: powerballExpectedValue >= 0 ? greenColor : redColor }}>
-                {'$ ' + powerballExpectedValue.toFixed(2)}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Powerball + Power Play</TableCell>
-              <TableCell align="center">{'$ ' + powerballJackpot.toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center">{'$ ' + (powerballJackpotTakeHome).toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center" sx={{ color: powerballPowerplayExpectedValue >= 0 ? greenColor : redColor }}>
-                {'$ ' + powerballPowerplayExpectedValue.toFixed(2)}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>MegaMillions</TableCell>
-              <TableCell align="center">{'$ ' + megamillionsJackpot.toLocaleString() + ' M'}</TableCell>
-              <TableCell align="center">{'$ ' + megamillionsJackpotTakeHome.toLocaleString() + ' M' }</TableCell>
-              <TableCell align="center" sx={{ color: megamillionsExpectedValue >= 0 ? greenColor : redColor }}>
-                {'$ ' + megamillionsExpectedValue.toFixed(2)}
-              </TableCell>
-            </TableRow>
+            {[powerballPayout, powerballPowerplayPayout, megamillionsPayout].map((lottery, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ fontWeight: 'bold' }}>{lottery.name}</TableCell>
+                <TableCell align="center">{'$ ' + lottery.jackpot.toLocaleString() + ' M'}</TableCell>
+                <TableCell align="center">{'$ ' + (lottery.jackpotTakeHome).toLocaleString() + ' M'}</TableCell>
+                <TableCell align="center" sx={{ color: lottery.expectedValue >= 0 ? greenColor : redColor }}>
+                  {'$ ' + lottery.expectedValue.toFixed(2)}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

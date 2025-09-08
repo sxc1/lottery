@@ -5,7 +5,7 @@ import {
   Box, 
   Paper
 } from '@mui/material'
-import AppBar from './components/AppBar'
+import AppBar from './components/AppBar/AppBar'
 import Infoheader from './components/InfoHeader'
 import LotterySelector from './components/LotterySelector'
 import ResultsDisplay from './components/ResultsDisplay'
@@ -45,7 +45,7 @@ function App() {
       {/* Top App Bar */}
       <AppBar />
       {/* Main Container */}
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ mb: 4 }}>
         {/* Top Container */}
         <Box 
           sx={{ 

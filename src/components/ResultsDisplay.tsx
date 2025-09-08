@@ -52,7 +52,7 @@ const ResultsDisplay = ({ lotteryType, randomnessType, ticketCount, generationTr
         <Box sx={{ width: '100%' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
             {generatedTickets.tickets.map((ticket, ticketIndex) => (
-              <Box key={ticketIndex} sx={{ display: 'flex', gap: 1}}>
+              <Box key={ticketIndex} sx={{ display: 'flex', gap: 1}} mt={1} mb={1}>
                 {ticket.mainNumbers.map((num, numIndex) => (
                   <CircleNumber key={`main-${ticketIndex}-${numIndex}`} numberValue={num} textColor="black" backgroundColor="white" />
                 ))}
@@ -69,7 +69,7 @@ const ResultsDisplay = ({ lotteryType, randomnessType, ticketCount, generationTr
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom mb={1}>
         Tickets
       </Typography>
       {getResultContent()}

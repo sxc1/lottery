@@ -108,6 +108,7 @@ export default function InfoModal({ open, onClose }: InfoModalProps) {
         {/* Tab Content */}
         <Box sx={{ maxHeight: '60vh', overflow: 'auto' }}>
           <CustomTabPanel value={tabValue} index={0}>
+            {/* TODO: Replace these with Markdown/KaTeX renderers */}
             <LotteryCalculatorInfo />
           </CustomTabPanel>
           <CustomTabPanel value={tabValue} index={1}>

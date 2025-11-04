@@ -113,7 +113,7 @@ export default function EditableTable({ header, rows, onJackpotChange }: Editabl
                           }}
                         />
                       ) : (
-                        lottery.jackpot > 0 ? '$ ' + lottery.jackpot.toLocaleString() + ' M' : <EditIcon />
+                        lottery.jackpot > 0 ? '$ ' + lottery.jackpot.toLocaleString() + ' M' : <EditIcon fontSize="small"/>
                       )}
                     </TableCell>
                     {/* Cell hiddon on mobile/xs displays*/}

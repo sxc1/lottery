@@ -8,6 +8,7 @@ import {
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import LotteryCalculatorInfo from './LotteryCalculatorInfo'
+import LotteryExpectedValueInfo from './LotteryExpectedValueInfo'
 import LotteryTicketGeneratorInfo from './LotteryTicketGeneratorInfo'
 
 interface TabPanelProps {
@@ -90,8 +91,9 @@ export default function InfoModal({ open, onClose }: InfoModalProps) {
             variant="fullWidth"
             sx={{ flexGrow: 1 }}
           >
-            <Tab label="Calculator" {...a11yProps(0)} />
-            <Tab label="Ticket Generator" {...a11yProps(1)} />
+            <Tab label="Jackpots" {...a11yProps(0)} />
+            <Tab label="Expected Value" {...a11yProps(1)} />
+            <Tab label="Ticket Generator" {...a11yProps(2)} />
           </Tabs>
           <IconButton
             aria-label="close"
@@ -112,6 +114,9 @@ export default function InfoModal({ open, onClose }: InfoModalProps) {
             <LotteryCalculatorInfo />
           </CustomTabPanel>
           <CustomTabPanel value={tabValue} index={1}>
+            <LotteryExpectedValueInfo />
+          </CustomTabPanel>
+          <CustomTabPanel value={tabValue} index={2}>
             <LotteryTicketGeneratorInfo />
           </CustomTabPanel>
         </Box>

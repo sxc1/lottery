@@ -114,7 +114,7 @@ export function calculateExpectedValue(
     const nonJackpotEv = calculateNonJackpotEv(lotteryType, multiplierActive);
     var cost = 0;
     if (lotteryType === 'megamillions') {
-        cost = 2;
+        cost = 5;
     } else if (lotteryType === 'powerball') {
         if (multiplierActive) {
             cost = 3;

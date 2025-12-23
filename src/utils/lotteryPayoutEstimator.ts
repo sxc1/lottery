@@ -36,13 +36,17 @@ export function scrapePowerballJackpot(rawHtml: string): LotteryFetchResult {
     const jackpotText = jackpotElement?.textContent?.trim() || '';
     const cashText = cashElement?.textContent?.trim() || '';
     
-    // Parse jackpot amount (handle $ and Million)
-    const jackpotMatch = jackpotText.match(/\$?([0-9,]+(?:\.[0-9]+)?)\s*Million/i);
-    const cashMatch = cashText.match(/\$?([0-9,]+(?:\.[0-9]+)?)\s*Million/i);
+    // Parse jackpot amount (handle $ and Million/Billion)
+    const jackpotMatch = jackpotText.match(/\$?([0-9,]+(?:\.[0-9]+)?)\s*(Million|Billion)/i);
+    const cashMatch = cashText.match(/\$?([0-9,]+(?:\.[0-9]+)?)\s*(Million|Billion)/i);
     
-    // Convert to numbers (multiply by 1 for millions)
-    const jackpot = jackpotMatch ? parseFloat(jackpotMatch[1].replace(/,/g, '')) : 0;
-    const jackpotCash = cashMatch ? parseFloat(cashMatch[1].replace(/,/g, '')) : 0;
+    // Convert to numbers in millions (multiply by 1000 if Billion)
+    const jackpot = jackpotMatch 
+      ? parseFloat(jackpotMatch[1].replace(/,/g, '')) * (jackpotMatch[2].toLowerCase() === 'billion' ? 1000 : 1) 
+      : 0;
+    const jackpotCash = cashMatch 
+      ? parseFloat(cashMatch[1].replace(/,/g, '')) * (cashMatch[2].toLowerCase() === 'billion' ? 1000 : 1) 
+      : 0;
     
     return { jackpot, jackpotCash };
   } catch (error) {
